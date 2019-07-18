@@ -1,0 +1,37 @@
+{
+
+            // CSP--0042 Fair Market Value Evalauted Logic update. 
+
+            if(cont.Opportunity__r.CPQOpportunity__c == FALSE){
+
+                if(cont.Opportunity__r.Numberofproducts__c <= 1){
+
+                    cont.FairMarketValueEvaluated__c = 'No'; 
+
+                    contractList.add(cont);
+
+                }else{
+
+                    cont.FairMarketValueEvaluated__c = NULL;  
+
+                    contractList.add(cont);
+
+                }
+
+            }
+
+            /*if(cont.FairMarketValueEvaluated__c != 'Yes' && oppIds.contains(cont.Opportunity__c))
+
+            {
+
+                cont.FairMarketValueEvaluated__c = 'Yes';  contractList.add(cont);   
+
+            }*/
+
+        }
+
+        update contractList;
+
+    }
+
+    
