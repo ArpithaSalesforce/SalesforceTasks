@@ -12,7 +12,37 @@
         }
         for(OpportunityTeamMember otm : OppTeamList) {
             If(Trigger.IsDelete && Trigger.IsBefore){
-                If(otm.TeamMemberRole  == 'Secondary Credit' && ProfileName == 'CSC'){
+                If(otm.TeamMemberRole  == 'Secondary Credit' && ProfileName == 'trigger OppTeamSecCreditRoleUpd on OpportunityTeamMember (before insert,before update,before delete) {
+  
+    try{
+        User LoggedInUser = [select Id, username from User where Id = :UserInfo.getUserId()];
+        String ProfileName = '';
+        List<OpportunityTeamMember> oppTeamList;
+        Opportunity Opp;
+        If(trigger.IsDelete){
+            oppTeamList = Trigger.old;
+            ProfileName = [Select Name from Profile where id=:UserInfo.getProfileId() LIMIT 1].Name;
+        }else{
+            OppTeamList = Trigger.new;
+            Opp = [select Id, OwnerId from Opportunity where Id = :OppTeamList[0].OpportunityId LIMIT 1];
+        }
+        for(OpportunityTeamMember otm : OppTeamList) {
+            If(Trigger.IsDelete && Trigger.IsBefore){
+                If(otm.TeamMemberRole  == 'Secondary Credit' && ProfileName == 'System Administrator'){
+                    otm.adderror('You do not have the rights to delete a Secondary Credit Opportunity Team member.');
+                }                                  
+            }else{
+                if(otm.TeamMemberRole  == 'Secondary Credit' && Opp.OwnerId == LoggedInUser.Id){
+                    delete otm;
+                  //  otm.adderror('Opportunity owner cannot add  Team member with role as Secondary credit');                                   
+                }
+            }
+        }
+   }catch(Exception e){
+       System.debug('<++++++Exception e+++++>'+e.getmessage());
+   }
+    
+}'){
                     otm.adderror('You do not have the rights to delete a Secondary Credit Opportunity Team member.');
                 }                                  
             }else{
